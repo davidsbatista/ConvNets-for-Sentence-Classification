@@ -8,6 +8,7 @@ from keras.activations import relu
 from keras.layers import Input, Dense, Embedding, Flatten, Conv1D, MaxPooling1D
 from keras.layers import Dropout, concatenate
 
+
 def compute_metrics(raw_predictions, label_encoder):
     # convert raw predictions to class indexes
     threshold = 0.5
@@ -22,9 +23,9 @@ def compute_metrics(raw_predictions, label_encoder):
     # print precision, recall, f1-score report
     print(classification_report(y_test, pred_classes))
 
-def load_embeddings():
-    glove_dir = '/Users/dsbatista/resources/glove.6B'
 
+def load_fasttext_embeddings():
+    glove_dir = '/Users/dsbatista/resources/glove.6B'
     embeddings_index = {}
     f = open(os.path.join(glove_dir, 'glove.6B.100d.txt'))
     for line in f:
@@ -33,21 +34,19 @@ def load_embeddings():
         coefs = np.asarray(values[1:], dtype='float32')
         embeddings_index[word] = coefs
     f.close()
-
-    print('Found %s word vectors.' % len(embeddings_index))
-
+    print('Loaded %s word vectors.' % len(embeddings_index))
     return embeddings_index
 
 
-def create_embeddings_matrix(embeddings_index, vocab_size, embedding_dim=100):
-    embeddings_matrix = np.random.rand(vocab_size+1, embedding_dim)
-    for i, word in enumerate(embeddings_index):
-        if i < vocab_size:
-            embedding_vector = embeddings_index.get(word)
-            if embedding_vector is not None:
-                embeddings_matrix[i] = embedding_vector
+def create_embeddings_matrix(embeddings_index, vocabulary, embedding_dim=100):
+    embeddings_matrix = np.random.rand(len(vocabulary)+1, embedding_dim)
+    for i, word in enumerate(vocabulary):
+        embedding_vector = embeddings_index.get(word)
+        if embedding_vector is not None:
+            embeddings_matrix[i] = embedding_vector
     print('Matrix shape: {}'.format(embeddings_matrix.shape))
     return embeddings_matrix
+
 
 def get_embeddings_layer(embeddings_matrix, name, max_len, trainable=False):
     embedding_layer = Embedding(
@@ -58,6 +57,7 @@ def get_embeddings_layer(embeddings_matrix, name, max_len, trainable=False):
         trainable=trainable,
         name=name)
     return embedding_layer
+
 
 def get_conv_pool(x_input, suffix, n_grams=[3,4,5], feature_maps=100):
     branches = []
