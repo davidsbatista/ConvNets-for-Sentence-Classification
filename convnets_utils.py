@@ -6,7 +6,7 @@ from sklearn.metrics import classification_report
 from keras.models import Model
 from keras.activations import relu
 from keras.layers import Input, Dense, Embedding, Flatten, Conv1D, MaxPooling1D
-from keras.layers import concatenate
+from keras.layers import Dropout, concatenate
 
 def compute_metrics(raw_predictions, label_encoder):
     # convert raw predictions to class indexes
@@ -82,6 +82,7 @@ def get_cnn_rand(embedding_dim, vocab_size, max_len, num_classes):
     # and concatenate the result of each branch into a single vector
     branches = get_conv_pool(x, 'dynamic')
     z = concatenate(branches, axis=-1)
+    z = Dropout(0.5)(z)
 
     # pass the concatenated vector to the predition layer
     o = Dense(num_classes, activation='sigmoid', name='output')(z)
