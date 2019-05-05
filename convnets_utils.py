@@ -59,11 +59,11 @@ def get_embeddings_layer(embeddings_matrix, name, max_len, trainable=False):
     return embedding_layer
 
 
-def get_conv_pool(x_input, suffix, n_grams=[3,4,5], feature_maps=100):
+def get_conv_pool(x_input, max_len, suffix, n_grams=[3,4,5], feature_maps=100):
     branches = []
     for n in n_grams:
         branch = Conv1D(filters=feature_maps, kernel_size=n, activation=relu, name='Conv_'+suffix+'_'+str(n))(x_input)
-        branch = MaxPooling1D(pool_size=2, strides=None, padding='valid', name='MaxPooling_'+suffix+'_'+str(n))(branch)
+        branch = MaxPooling1D(pool_size=max_len-n+1, strides=None, padding='valid', name='MaxPooling_'+suffix+'_'+str(n))(branch)
         branch = Flatten(name='Flatten_'+suffix+'_'+str(n))(branch)
         branches.append(branch)
     return branches
@@ -80,7 +80,7 @@ def get_cnn_rand(embedding_dim, vocab_size, max_len, num_classes):
 
     # generate several branches in the network, each for a different convolution+pooling operation,
     # and concatenate the result of each branch into a single vector
-    branches = get_conv_pool(x, 'dynamic')
+    branches = get_conv_pool(x, max_len, 'dynamic')
     z = concatenate(branches, axis=-1)
     z = Dropout(0.5)(z)
 
@@ -99,7 +99,7 @@ def get_cnn_pre_trained_embeddings(embedding_layer, max_len, num_classes):
 
     # generate several branches in the network, each for a different convolution+pooling operation,
     # and concatenate the result of each branch into a single vector
-    branches = get_conv_pool(x, 'static')
+    branches = get_conv_pool(x, max_len, 'static')
     z = concatenate(branches, axis=-1)
 
     # pass the concatenated vector to the predition layer
@@ -116,13 +116,13 @@ def get_cnn_multichannel(embedding_layer_channel_1, embedding_layer_channel_2, m
     # dynamic channel
     input_dynamic = Input(shape=(max_len,), dtype='int32', name='input_dynamic')
     x = embedding_layer_channel_1(input_dynamic)
-    branches_dynamic = get_conv_pool(x, 'static')
+    branches_dynamic = get_conv_pool(x, max_len, 'static')
     z_dynamic = concatenate(branches_dynamic, axis=-1)
 
     # static channel
     input_static = Input(shape=(max_len,), dtype='int32', name='input_static')
     x = embedding_layer_channel_2(input_static)
-    branches_static = get_conv_pool(x, 'dynamic')
+    branches_static = get_conv_pool(x, max_len, 'dynamic')
     z_static = concatenate(branches_static, axis=-1)
 
     # concatenate both models and pass to classification layer
