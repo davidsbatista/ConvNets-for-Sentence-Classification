@@ -89,44 +89,44 @@ __CNN multichannel dynamic and static word embeddings__
 
  __CNN w/ random word embeddings__
 
-               precision    recall  f1-score   support
-
-     negative       0.22      0.19      0.20       405
-      neutral       0.53      0.72      0.61      1155
-     positive       0.19      0.11      0.14       424
-very positive       0.07      0.02      0.03       112
-very_negative       0.05      0.01      0.01       114
+                   precision    recall  f1-score   support
+    
+         negative       0.22      0.19      0.20       405
+          neutral       0.53      0.72      0.61      1155
+         positive       0.19      0.11      0.14       424
+    very positive       0.07      0.02      0.03       112
+    very_negative       0.05      0.01      0.01       114
 
 
 __CNN w/ pre-trained static word embeddings__
 
-               precision    recall  f1-score   support
-
-     negative       0.13      0.03      0.05       405
-      neutral       0.52      0.91      0.66      1155
-     positive       0.13      0.03      0.05       424
-very positive       0.00      0.00      0.00       112
-very_negative       0.00      0.00      0.00       114
+                   precision    recall  f1-score   support
+    
+         negative       0.13      0.03      0.05       405
+          neutral       0.52      0.91      0.66      1155
+         positive       0.13      0.03      0.05       424
+    very positive       0.00      0.00      0.00       112
+    very_negative       0.00      0.00      0.00       114
 
 
 __CNN w/ pre-trained dynamic word embeddings__
 
-               precision    recall  f1-score   support
-
-     negative       0.15      0.10      0.12       405
-      neutral       0.52      0.76      0.61      1155
-     positive       0.18      0.08      0.11       424
-very positive       0.12      0.03      0.04       112
-very_negative       0.04      0.01      0.01       114
+                   precision    recall  f1-score   support
+    
+         negative       0.15      0.10      0.12       405
+          neutral       0.52      0.76      0.61      1155
+         positive       0.18      0.08      0.11       424
+    very positive       0.12      0.03      0.04       112
+    very_negative       0.04      0.01      0.01       114
 
 
 __CNN multichannel dynamic and static word embeddings__
 
-               precision    recall  f1-score   support
-
-     negative       0.16      0.11      0.13       405
-      neutral       0.52      0.65      0.58      1155
-     positive       0.23      0.22      0.22       424
-very positive       0.02      0.01      0.01       112
-very_negative       0.12      0.03      0.04       114
+                   precision    recall  f1-score   support
+    
+         negative       0.16      0.11      0.13       405
+          neutral       0.52      0.65      0.58      1155
+         positive       0.23      0.22      0.22       424
+    very positive       0.02      0.01      0.01       112
+    very_negative       0.12      0.03      0.04       114
 
