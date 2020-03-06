@@ -9,21 +9,6 @@ from keras.layers import Input, Dense, Embedding, Flatten, Conv1D, MaxPooling1D
 from keras.layers import Dropout, concatenate
 
 
-def compute_metrics(raw_predictions, label_encoder):
-    # convert raw predictions to class indexes
-    threshold = 0.5
-    class_predictions = [(x > threshold).astype(int) for x in raw_predictions]
-
-    # select only one class (i.e., the dim in the vector with 1.0 all other are at 0.0)
-    class_index = ([np.argmax(x) for x in class_predictions])
-
-    # convert back to original class names
-    pred_classes = label_encoder.inverse_transform(class_index)
-
-    # print precision, recall, f1-score report
-    print(classification_report(y_test, pred_classes))
-
-
 def load_fasttext_embeddings():
     glove_dir = '/Users/dsbatista/resources/glove.6B'
     embeddings_index = {}
@@ -39,7 +24,7 @@ def load_fasttext_embeddings():
 
 
 def create_embeddings_matrix(embeddings_index, vocabulary, embedding_dim=100):
-    embeddings_matrix = np.random.rand(len(vocabulary)+1, embedding_dim)
+    embeddings_matrix = np.random.rand(len(vocabulary) + 1, embedding_dim)
     for i, word in enumerate(vocabulary):
         embedding_vector = embeddings_index.get(word)
         if embedding_vector is not None:
@@ -59,20 +44,23 @@ def get_embeddings_layer(embeddings_matrix, name, max_len, trainable=False):
     return embedding_layer
 
 
-def get_conv_pool(x_input, max_len, suffix, n_grams=[3,4,5], feature_maps=100):
+def get_conv_pool(x_input, max_len, suffix, n_grams=[3, 4, 5], feature_maps=100):
     branches = []
     for n in n_grams:
-        branch = Conv1D(filters=feature_maps, kernel_size=n, activation=relu, name='Conv_'+suffix+'_'+str(n))(x_input)
-        branch = MaxPooling1D(pool_size=max_len-n+1, strides=None, padding='valid', name='MaxPooling_'+suffix+'_'+str(n))(branch)
-        branch = Flatten(name='Flatten_'+suffix+'_'+str(n))(branch)
+        branch = Conv1D(filters=feature_maps, kernel_size=n, activation=relu,
+                        name='Conv_' + suffix + '_' + str(n))(x_input)
+        branch = MaxPooling1D(pool_size=max_len - n + 1, strides=None, padding='valid',
+                              name='MaxPooling_' + suffix + '_' + str(n))(branch)
+        branch = Flatten(name='Flatten_' + suffix + '_' + str(n))(branch)
         branches.append(branch)
     return branches
 
 
-def get_cnn_rand(embedding_dim, vocab_size, max_len, num_classes):
+def get_cnn_rand(embedding_dim, vocab_size, max_len, num_classes, loss='categorical_crossentropy'):
     # create the embedding layer
     embedding_matrix = np.random.rand(vocab_size, embedding_dim)
-    embedding_layer = get_embeddings_layer(embedding_matrix, 'embedding_layer_dynamic', max_len, trainable=True)
+    embedding_layer = get_embeddings_layer(embedding_matrix, 'embedding_layer_dynamic',
+                                           max_len, trainable=True)
 
     # connect the input with the embedding layer
     i = Input(shape=(max_len,), dtype='int32', name='main_input')
@@ -84,15 +72,17 @@ def get_cnn_rand(embedding_dim, vocab_size, max_len, num_classes):
     z = concatenate(branches, axis=-1)
     z = Dropout(0.5)(z)
 
-    # pass the concatenated vector to the predition layer
-    o = Dense(num_classes, activation='sigmoid', name='output')(z)
+    # pass the concatenated vector to the prediction layer
+    o = Dense(num_classes, activation='softmax', name='output')(z)
 
     model = Model(inputs=i, outputs=o)
-    model.compile(loss={'output': 'binary_crossentropy'}, optimizer='adam', metrics=['accuracy'])
+    model.compile(loss={'output': loss}, optimizer='adam', metrics=['accuracy'])
 
     return model
 
-def get_cnn_pre_trained_embeddings(embedding_layer, max_len, num_classes):
+
+def get_cnn_pre_trained_embeddings(embedding_layer, max_len, num_classes,
+                                   loss='categorical_crossentropy'):
     # connect the input with the embedding layer
     i = Input(shape=(max_len,), dtype='int32', name='main_input')
     x = embedding_layer(i)
@@ -101,18 +91,19 @@ def get_cnn_pre_trained_embeddings(embedding_layer, max_len, num_classes):
     # and concatenate the result of each branch into a single vector
     branches = get_conv_pool(x, max_len, 'static')
     z = concatenate(branches, axis=-1)
+    z = Dropout(0.5)(z)
 
-    # pass the concatenated vector to the predition layer
-    o = Dense(num_classes, activation='sigmoid', name='output')(z)
+    # pass the concatenated vector to the prediction layer
+    o = Dense(num_classes, activation='softmax', name='output')(z)
 
     model = Model(inputs=i, outputs=o)
-    model.compile(loss={'output': 'binary_crossentropy'}, optimizer='adam', metrics=['accuracy'])
+    model.compile(loss={'output': loss}, optimizer='adam', metrics=['accuracy'])
 
     return model
 
 
-def get_cnn_multichannel(embedding_layer_channel_1, embedding_layer_channel_2, max_len, num_classes):
-
+def get_cnn_multichannel(embedding_layer_channel_1, embedding_layer_channel_2, max_len,
+                         num_classes, loss='categorical_crossentropy'):
     # dynamic channel
     input_dynamic = Input(shape=(max_len,), dtype='int32', name='input_dynamic')
     x = embedding_layer_channel_1(input_dynamic)
@@ -126,12 +117,13 @@ def get_cnn_multichannel(embedding_layer_channel_1, embedding_layer_channel_2, m
     z_static = concatenate(branches_static, axis=-1)
 
     # concatenate both models and pass to classification layer
-    z = concatenate([z_static,z_dynamic], axis=-1)
+    z = concatenate([z_static, z_dynamic], axis=-1)
+    z = Dropout(0.5)(z)
 
-    # pass the concatenated vector to the predition layer
-    o = Dense(num_classes, activation='sigmoid', name='output')(z)
+    # pass the concatenated vector to the prediction layer
+    o = Dense(num_classes, activation='softmax', name='output')(z)
 
     model = Model(inputs=[input_dynamic, input_static], outputs=o)
-    model.compile(loss={'output': 'binary_crossentropy'}, optimizer='adam', metrics=['accuracy'])
+    model.compile(loss={'output': loss}, optimizer='adam', metrics=['accuracy'])
 
     return model
