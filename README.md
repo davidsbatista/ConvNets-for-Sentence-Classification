@@ -8,7 +8,8 @@ experiment with Keras, and some understanding of the method for classification p
 the paper.  
 
 This code is also the result of a blog post I wrote about the idea of using ConvNets to classify
-sentences: http://www.davidsbatista.net/blog/2018/03/31/SentenceClassificationConvNets/
+sentences: 
+- http://www.davidsbatista.net/blog/2018/03/31/SentenceClassificationConvNets/
 
 
 ## Experiments
