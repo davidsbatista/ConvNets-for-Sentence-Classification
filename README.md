@@ -36,10 +36,11 @@ Some considerations:
 
 The results are in line with the ones reported in the paper, a bit lower, but within the expected.
 
-Since this is a multi-label dataset I also report the results per class.
-
 
 ## Precision / Recall / F1
+
+Since this is a multi-label dataset I also report the results per class for each of the different
+models.
 
 ### TREC
 
