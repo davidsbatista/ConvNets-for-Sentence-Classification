@@ -1,12 +1,17 @@
-## Sentence Classification with Convolutional Neural Networks
+## Sentence Classification with Convolution Neural Networks
 
 This repository contains experiments done with Keras implementations of the Convolutional Neural
-Networks to perform sentence classification based on the paper of [Kim (2014)](https://www.aclweb.org/anthology/D14-1181.pdf)  
+Networks (ConvNets) to perform sentence classification based on the paper of [Kim (2014)](https://www.aclweb.org/anthology/D14-1181.pdf).
 
-I also wrote a blog post about it, you can read it here:
-- http://www.davidsbatista.net/blog/2018/03/31/SentenceClassificationConvNets/
+The idea was not to replicate the results reported on the paper, but to have a first hands-on 
+experiment with Keras, and some understanding of the method for classification proposed in 
+the paper.  
 
-I did experiments on 2 datasets:
+This code is also the result of a blog post I wrote about the idea of using ConvNets to classify
+sentences: http://www.davidsbatista.net/blog/2018/03/31/SentenceClassificationConvNets/
+
+
+## Experiments
 
 -  TREC (http://cogcomp.cs.illinois.edu/Data/QA/QC/)
 -  Stanford Sentiment Treebank (https://nlp.stanford.edu/sentiment/) (fine-grained-labels)
@@ -17,8 +22,6 @@ Some considerations:
 - The random embeddings have a dimensionality of 300
 - I ran the training for 10 epochs 
 
-
-# Results
 
 ## Accuracy
 
@@ -33,7 +36,8 @@ Some considerations:
 The results are in line with the ones reported in the paper, a bit lower, but within the expected.
 Since this is a multi-label dataset I also report the results per class.
 
-## Precision/Recall/F1
+
+## Precision / Recall / F1
 
 ### TREC
 
