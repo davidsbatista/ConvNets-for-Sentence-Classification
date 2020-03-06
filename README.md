@@ -1,34 +1,43 @@
-# Sentence Classification with Convolutional Neural Networks
+## Sentence Classification with Convolutional Neural Networks
 
-Code for blog post:
+This repository contains experiments done with Keras implementations of the Convolutional Neural
+Networks to perform sentence classification based on the paper of [Kim (2014)](https://www.aclweb.org/anthology/D14-1181.pdf)  
+
+I also wrote a blog post about it, you can read it here:
 - http://www.davidsbatista.net/blog/2018/03/31/SentenceClassificationConvNets/
 
-I only did experiments on 2 datasets:
+I did experiments on 2 datasets:
 
 -  TREC (http://cogcomp.cs.illinois.edu/Data/QA/QC/)
--  Stanford Sentiment Treebank (https://nlp.stanford.edu/sentiment/)
+-  Stanford Sentiment Treebank (https://nlp.stanford.edu/sentiment/) (fine-grained-labels)
 
-Other considerations:
+Some considerations:
 
 - I used GloVe vectors of dimensionality 50
-- Experiments with the TREC dataset only ran for 10 epochs 
+- The random embeddings have a dimensionality of 300
+- I ran the training for 10 epochs 
 
 
-## Results (accuracy)
+# Results
 
-| Model            | TREC       |  SST-1  |
-| -----------------|:----------:| -------:|
-| CNN-rand         | 0.918      |         |
-| CNN-static       | 0.896      |         |
-| CNN-non-static   | 0.919      |         |
-| CNN-multichannel | 0.921      |         |
+## Accuracy
+
+| Model                                               | TREC       |  SST-1  |
+| ----------------------------------------------------|:----------:| -------:|
+| CNN w/ random word embeddings                       | 0.918      |  0.432  |
+| CNN w/ pre-trained static word embeddings           | 0.896      |  0.484  |
+| CNN w/ pre-trained dynamic word embeddings          | 0.919      |  0.432  |
+| CNN multichannel dynamic and static word embeddings | 0.921      |  0.406  |
 
 
-## Results (precision/recall/f1)
+The results are in line with the ones reported in the paper, a bit lower, but within the expected.
+Since this is a multi-label dataset I also report the results per class.
+
+## Precision/Recall/F1
 
 ### TREC
 
-- CNN-rand
+ __CNN w/ random word embeddings__
 
              precision    recall  f1-score   support
 
@@ -39,7 +48,7 @@ Other considerations:
          LOC       0.91      0.93      0.92        81
          NUM       0.61      0.84      0.70       113
 
-- CNN-static
+__CNN w/ pre-trained static word embeddings__
 
           precision    recall  f1-score   support
 
@@ -50,7 +59,7 @@ Other considerations:
          LOC       0.75      0.73      0.74        81
          NUM       0.98      0.71      0.82       113
 
-- CNN-non-static
+__CNN w/ pre-trained dynamic word embeddings__
 
          precision    recall  f1-score   support
 
@@ -62,7 +71,7 @@ Other considerations:
          NUM       0.96      0.85      0.90       113
 
 
-- CNN-multichannel
+__CNN multichannel dynamic and static word embeddings__
 
                precision    recall  f1-score   support
 
@@ -75,4 +84,49 @@ Other considerations:
 
 ---
 
-### T
+
+### SST-1
+
+ __CNN w/ random word embeddings__
+
+               precision    recall  f1-score   support
+
+     negative       0.22      0.19      0.20       405
+      neutral       0.53      0.72      0.61      1155
+     positive       0.19      0.11      0.14       424
+very positive       0.07      0.02      0.03       112
+very_negative       0.05      0.01      0.01       114
+
+
+__CNN w/ pre-trained static word embeddings__
+
+               precision    recall  f1-score   support
+
+     negative       0.13      0.03      0.05       405
+      neutral       0.52      0.91      0.66      1155
+     positive       0.13      0.03      0.05       424
+very positive       0.00      0.00      0.00       112
+very_negative       0.00      0.00      0.00       114
+
+
+__CNN w/ pre-trained dynamic word embeddings__
+
+               precision    recall  f1-score   support
+
+     negative       0.15      0.10      0.12       405
+      neutral       0.52      0.76      0.61      1155
+     positive       0.18      0.08      0.11       424
+very positive       0.12      0.03      0.04       112
+very_negative       0.04      0.01      0.01       114
+
+
+__CNN multichannel dynamic and static word embeddings__
+
+               precision    recall  f1-score   support
+
+     negative       0.16      0.11      0.13       405
+      neutral       0.52      0.65      0.58      1155
+     positive       0.23      0.22      0.22       424
+very positive       0.02      0.01      0.01       112
+very_negative       0.12      0.03      0.04       114
+
